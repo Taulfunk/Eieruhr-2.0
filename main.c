@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -7,7 +8,7 @@
 #include "LCD-Funktionen.h"
 #include <avr/eeprom.h>
 
-#define DEBOUNCE 1500
+#define DEBOUNCE 150
 #define WAIT 500
 #define SET             PD0
 #define Speaker         PD6
@@ -32,6 +33,7 @@ Preset1, Preset2;
 void playTone(uint8_t, uint16_t);
 ISR(INT0_vect)
 {
+    _delay_us(DEBOUNCE);
     if (bit_is_set(PIND, PD2))
     {
         
@@ -222,16 +224,16 @@ ISR(PCINT2_vect)
         switch (Sekunden)
         {
             case 1:
-                Anzeige2(duration, 1);
+                Timer(duration, 1);
                 break;
             case 0:
-                Anzeige2(duration, 0);
+                Timer(duration, 0);
                 break;
             default:
                 break;
         }
         
-        Anzeige(0);
+   //     Anzeige(0);
         duration = 0;
         
         /*Interrupts reenabled um dem Piepen ein Ende setzen zu koennen*/
