@@ -1,0 +1,11 @@
+-Offset der Zeit finden
+-Modus aufm Display anzeigen lassen
+beim Rechtsdreh nur zur Null hohes Piepen
+Zeit rechtsrandig
+
+
+Ideen
+-Verschieden Modi mit Bezeichnungen einfügbar machen
+-ISP?
+Anzeige in interrupts ändern um Flackern zu eliminieren
+-Balken beim Boot/Countdown

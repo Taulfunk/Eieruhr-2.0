@@ -39,21 +39,18 @@ ISR(INT0_vect)
         
         if (bit_is_set(PIND, PD3))      //rechtsdreh
         {
-            if(duration < 98)
+            if(duration < 99)
             {
                 duration++;
                 playTone(1, 1);
-                
+                Anzeige2(duration);
             }
-            else if(duration < 99)
-            {
-                duration++;
-                playTone(1, 10);
-            }
+            
             else
             {
                 duration = 0;
                 playTone(1, 10);
+                Anzeige2(duration);
             }
         }
         
@@ -63,18 +60,21 @@ ISR(INT0_vect)
             {
                 duration--;
                 playTone(1, 1);
+                Anzeige2(duration);
             }
             
             else
             {
                 duration = 99;
                 playTone(1, 10);
+                Anzeige2(duration);
             }
         }
         
         else
         {
             duration = 0;
+            Anzeige2(duration);
             _delay_us(WAIT);
         }
     }
@@ -218,7 +218,7 @@ ISR(PCINT2_vect)
     }
     else if (bit_is_set(PIND, ENCODERBUTTON))       /*Countdown starten*/
     {
-        /*Verhindert eine Störung durch Bedienung der Knoepfe waehrend des Kochvorganges*/
+        /*Verhindert eine Störung durch Bedienung der Knoepfe waehrend des Stopvorgangs*/
         cli();
         
         switch (Sekunden)
@@ -235,7 +235,7 @@ ISR(PCINT2_vect)
         
    //     Anzeige(0);
         duration = 0;
-        
+        Anzeige2(duration);
         /*Interrupts reenabled um dem Piepen ein Ende setzen zu koennen*/
         sei();
         
@@ -261,6 +261,7 @@ ISR(PCINT2_vect)
         }
     }
     sei();
+    Anzeige2(duration);
 }
 
 void initInterrupt0(void)
@@ -328,7 +329,7 @@ int main(void)
     /*Initialisiert den Startwert der Uhr.
      Die favoritisierten Werte sollten also mit dem ersten Preset gespeichert werden*/
     Sekunden ? (duration = Preset1.sekundo) : (duration = Preset1.minuto);
-    
+    Anzeige2(duration);
     /*Begrüßung*/
     Hi();
     PORTB = 0xff;
@@ -339,7 +340,23 @@ int main(void)
     while(1)
     {
         /*Gibt einfach nur die Anzeige wieder. Die Musik spielt in den ISRs*/
-        Anzeige(duration);
+        uint8_t array[8] =
+        {
+            0b11111111,
+            0b11111111,
+            0b11111111,
+            0b11111111,
+            0b11111111,
+            0b11111111,
+            0b11111111
+        };
+        lcd_clear();
+        lcd_generatechar(0, array);
+        lcd_setcursor(0, 1);
+        lcd_data(0);
+        lcd_setcursor(1, 1);
+        lcd_data(0);
+        _delay_ms(1000);
     }
     return 0;
 }
