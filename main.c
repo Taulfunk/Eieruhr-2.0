@@ -8,7 +8,7 @@
 #include "LCD-Funktionen.h"
 #include <avr/eeprom.h>
 
-#define DEBOUNCE 150
+#define DEBOUNCE 100
 #define WAIT 500
 #define SET             PD0
 #define Speaker         PD6
@@ -37,12 +37,14 @@ ISR(INT0_vect)
     if (bit_is_set(PIND, PD2))
     {
         
-        if (bit_is_set(PIND, PD3))      //rechtsdreh
+        if (bit_is_set(PIND, PD3))      //Rechtsdreh
         {
             if(duration < 99)
             {
                 duration++;
                 playTone(1, 1);
+                lcd_setcursor(6, 2);
+                lcd_string("  ");
                 Anzeige2(duration);
             }
             
@@ -50,16 +52,20 @@ ISR(INT0_vect)
             {
                 duration = 0;
                 playTone(1, 10);
+                lcd_setcursor(6, 2);
+                lcd_string("  ");
                 Anzeige2(duration);
             }
         }
         
-        else if(bit_is_clear(PIND, PD3))    //linksdreh
+        else if(bit_is_clear(PIND, PD3))    //Linksdreh
         {
             if(duration > 0)
             {
                 duration--;
                 playTone(1, 1);
+                lcd_setcursor(6, 2);
+                lcd_string("  ");
                 Anzeige2(duration);
             }
             
@@ -67,6 +73,8 @@ ISR(INT0_vect)
             {
                 duration = 99;
                 playTone(1, 10);
+                lcd_setcursor(6, 2);
+                lcd_string("  ");
                 Anzeige2(duration);
             }
         }
@@ -74,6 +82,8 @@ ISR(INT0_vect)
         else
         {
             duration = 0;
+            lcd_setcursor(6, 2);
+            lcd_string("  ");
             Anzeige2(duration);
             _delay_us(WAIT);
         }
@@ -86,6 +96,8 @@ ISR(PCINT2_vect)
 {
     _delay_us(DEBOUNCE);
     bit_is_set(PIND, SET) ? (Sekunden = 1) : (Sekunden = 0);
+    lcd_clear();
+    Anzeige2(duration);
     _delay_us(DEBOUNCE);
     if (bit_is_set(PIND, RESETBUTTON))      /*Anzeige auf 60*/
     {
@@ -168,6 +180,7 @@ ISR(PCINT2_vect)
                     {
                         eeprom_update_byte((uint8_t*)49, duration);
                         Preset2.sekundo = duration;
+                        
                         for (uint8_t i = 0; i < 3; i++)
                         {
                             playTone(1, 10);
@@ -185,6 +198,7 @@ ISR(PCINT2_vect)
                     {
                         eeprom_update_byte((uint8_t*)48, duration);
                         Preset2.minuto = duration;
+                        
                         for (uint8_t i = 0; i < 3; i++)
                         {
                             playTone(1, 10);
@@ -218,7 +232,7 @@ ISR(PCINT2_vect)
     }
     else if (bit_is_set(PIND, ENCODERBUTTON))       /*Countdown starten*/
     {
-        /*Verhindert eine Störung durch Bedienung der Knoepfe waehrend des Stopvorgangs*/
+        /*Verhindert eine Stoerung durch Bedienung der Knoepfe waehrend des Stopvorgangs*/
         cli();
         
         switch (Sekunden)
@@ -232,22 +246,19 @@ ISR(PCINT2_vect)
             default:
                 break;
         }
-        
-   //     Anzeige(0);
         duration = 0;
         Anzeige2(duration);
+        
         /*Interrupts reenabled um dem Piepen ein Ende setzen zu koennen*/
         sei();
-        
         for (uint8_t i = 0; i <= 20; i++)
         {
             for (uint8_t a = 0; a < 2; a++)
             {
+                /*Wurde der Encoder gedreht?*/
                 if (duration != 0)
                 {
-                    /*keine Ahnung was das war, vermutlich nicht mehr noetig*/
-                    i = 22;
-                    a = 3;
+                    duration = 0;
                     return;
                 }
                 playTone(1, 100);
@@ -339,25 +350,8 @@ int main(void)
     
     while(1)
     {
-        /*Gibt einfach nur die Anzeige wieder. Die Musik spielt in den ISRs*/
-        uint8_t array[8] =
-        {
-            0b11111111,
-            0b11111111,
-            0b11111111,
-            0b11111111,
-            0b11111111,
-            0b11111111,
-            0b11111111
-        };
-        lcd_clear();
-        lcd_generatechar(0, array);
-        lcd_setcursor(0, 1);
-        lcd_data(0);
-        lcd_setcursor(1, 1);
-        lcd_data(0);
-        _delay_ms(1000);
     }
+    
     return 0;
 }
 

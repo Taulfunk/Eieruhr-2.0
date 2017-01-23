@@ -1,5 +1,5 @@
 -Offset der Zeit finden
--Modus aufm Display anzeigen lassen
+Modus aufm Display anzeigen lassen
 beim Rechtsdreh nur zur Null hohes Piepen
 Zeit rechtsrandig
 
@@ -8,4 +8,5 @@ Ideen
 -Verschieden Modi mit Bezeichnungen einfügbar machen
 -ISP?
 Anzeige in interrupts ändern um Flackern zu eliminieren
--Balken beim Boot/Countdown
+Balken beim Boot/Countdown (testen)
+-Auf jeden Fall statt "Zehner" ein bewegliches Kochzeichen mit Generatechar implementieren( Topf, der kocht..,Wasser..etc.)
