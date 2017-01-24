@@ -299,7 +299,7 @@ void initTimer(void)
     /*OCR0A enthält den tongebenden vergleichenden Wert*/
 }
 
-/*macht irgendwie brauchbare Töne*/
+/*macht irgendwie brauchbare Toene*/
 void playTone(uint8_t wavelength, uint16_t duration)
 {
     /*lässt OCSR0A nach ja initialisierter Timer-ctc-Funktion den zu erreichenden Wert beinhalten*/

@@ -9,4 +9,16 @@ Ideen
 -ISP?
 Anzeige in interrupts ändern um Flackern zu eliminieren
 Balken beim Boot/Countdown (testen)
--Auf jeden Fall statt "Zehner" ein bewegliches Kochzeichen mit Generatechar implementieren( Topf, der kocht..,Wasser..etc.)
+Auf jeden Fall statt "Zehner" ein bewegliches Kochzeichen mit Generatechar implementieren( Topf, der kocht..,Wasser..etc.)
+-Kochanimation nach Ende dramatischen Effekt geben
+
+Offset:
+
+Minuten:
+
+90 Minuten
+990ms:
+062130 eta 075130_074948 (-142)
+
+990ms+ 1577us pro 60 sec:
+173530  eta 190530_190338(-112)
