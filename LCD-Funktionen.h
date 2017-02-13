@@ -159,7 +159,7 @@ void Anzeige2(uint8_t duration)
     if (duration / 10 == 0)
     {
         lcd_setcursor(0, 1);
-        lcd_string("         ");
+        lcd_string("          ");
         lcd_setcursor(9, 2);
         
         if (Sekunden)

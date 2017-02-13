@@ -17,6 +17,7 @@
 #define ENCODERBUTTON   PD5
 #define PRESET          PD7
 #define PRESET2         PD1
+#define DU              PB6
 
 volatile uint8_t duration = 0;
 uint8_t interruptknopf = 0;
@@ -78,7 +79,7 @@ ISR(INT0_vect)
                 Anzeige2(duration);
             }
         }
-        
+       // löschen 
         else
         {
             duration = 0;
@@ -95,14 +96,14 @@ ISR(INT0_vect)
 ISR(PCINT2_vect)
 {
     _delay_us(DEBOUNCE);
-    bit_is_set(PIND, SET) ? (Sekunden = 1) : (Sekunden = 0);
+    Sekunden = bit_is_set(PIND, SET) ? (1) : (0);
     lcd_clear();
     Anzeige2(duration);
     _delay_us(DEBOUNCE);
     if (bit_is_set(PIND, RESETBUTTON))      /*Anzeige auf 60*/
     {
         playTone(1, 5);
-        Sekunden?(duration = 60):(duration = 20);
+        playTone(1, 100);
     }
     
     /*Erster der beiden Presetbuttons*/
@@ -287,6 +288,8 @@ void initInterrupt0(void)
     PCMSK2 |= (1 << SET);
     PCMSK2 |= (1 << PRESET);
     PCMSK2 |= (1 << PRESET2);
+    
+    PCMSK0 |= (1 << DU); /*PB6 mit Interrupt für Countdown/Up modus*/
     sei();                                  /*setzt (global) interrupt enable bit*/
 }
 
@@ -296,13 +299,13 @@ void initTimer(void)
     TCCR0A |= (1 << COM0A0);                /*Togglet OC0A bei Compare Match*/
     TCCR0B |= (1 << CS00) | (1 << CS01) ;    /*clk/64*/
     
-    /*OCR0A enthält den tongebenden vergleichenden Wert*/
+    /*OCR0A enthaelt den tongebenden vergleichenden Wert*/
 }
 
 /*macht irgendwie brauchbare Toene*/
 void playTone(uint8_t wavelength, uint16_t duration)
 {
-    /*lässt OCSR0A nach ja initialisierter Timer-ctc-Funktion den zu erreichenden Wert beinhalten*/
+    /*laesst OCSR0A nach ja initialisierter Timer-ctc-Funktion den zu erreichenden Wert beinhalten*/
     OCR0A = wavelength;
     SPEAKER_DDR |= (1 << Speaker);
     
@@ -320,10 +323,11 @@ int main(void)
     initTimer();
     initInterrupt0();
     DDRB = 0xff;
+    DDRB = 0xff;
     DDRC = 0xff;
     DDRD = 0;
     
-    PORTD &= ~(1 << PD2);                   /*debounct durch Pulldowns*/
+    PORTD &= ~(1 << PD2);                 
     PORTD &= ~(1 << SET);
     PORTD &= ~(1 << PRESET);
     PORTD &= ~(1 << PRESET2);
@@ -335,11 +339,11 @@ int main(void)
     Preset2.sekundo = eeprom_read_byte((uint8_t*)49);
     
     /*Überprüfung des Minuten/Sekundeschalters*/
-    bit_is_set(PIND, SET) ? (Sekunden = 1) : (Sekunden = 0);
+    Sekunden = bit_is_set(PIND, SET) ? (1) : (0);
     
     /*Initialisiert den Startwert der Uhr.
      Die favoritisierten Werte sollten also mit dem ersten Preset gespeichert werden*/
-    Sekunden ? (duration = Preset1.sekundo) : (duration = Preset1.minuto);
+    duration = Sekunden ? (Preset1.sekundo) : (Preset1.minuto);
     Anzeige2(duration);
     /*Begrüßung*/
     Hi();
@@ -355,3 +359,12 @@ int main(void)
     return 0;
 }
 
+ISR(PCINT0_vect)
+{
+    if (bit_is_set(PORTB, DU))
+    {
+        playTone(1, 100);
+    }
+    else
+        playTone(1, 10);
+}
