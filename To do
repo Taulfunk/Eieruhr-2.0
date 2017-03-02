@@ -7,6 +7,7 @@ Zeit rechtsrandig
 Ideen
 -Verschieden Modi mit Bezeichnungen einfügbar machen
 -ISP?
+-Presets über encoder erscrollbar machen
 Anzeige in interrupts ändern um Flackern zu eliminieren
 Balken beim Boot/Countdown (testen)
 Auf jeden Fall statt "Zehner" ein bewegliches Kochzeichen mit Generatechar implementieren( Topf, der kocht..,Wasser..etc.)
@@ -22,3 +23,6 @@ Minuten:
 
 990ms+ 1577us pro 60 sec:
 173530  eta 190530_190338(-112)
+
+25 Minuten
+1327-eta-1353 ca.___ergebnis: 1351

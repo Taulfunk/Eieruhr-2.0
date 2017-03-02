@@ -103,7 +103,74 @@ ISR(PCINT2_vect)
     if (bit_is_set(PIND, RESETBUTTON))      /*Anzeige auf 60*/
     {
         playTone(1, 5);
-        playTone(1, 100);
+        //uint8_t Vergleich = duration;
+        if (Sekunden == 1)
+        {
+            _delay_ms(100);
+                for (uint8_t i = 0; i <= 99; i++)
+                {
+                    if (bit_is_set(PIND, RESETBUTTON))
+                        break;
+                    Anzeige2(i);
+                    _delay_ms(990);
+                    _delay_us(26);
+                    
+                    /*stellt einen brodelnden Kochtopf dar*/
+                    if ((i % 2) == 0)
+                    {
+                        lcd_generatechar(1, kochen1a);
+                        lcd_setcursor(10, 1);
+                        lcd_data(1);
+                        lcd_generatechar(2, kochen2a);
+                        lcd_setcursor(11, 1);
+                        lcd_data(2);
+                        lcd_generatechar(3, kochen3a);
+                        lcd_setcursor(12, 1);
+                        lcd_data(3);
+                        lcd_generatechar(4, kochen4a);
+                        lcd_setcursor(13, 1);
+                        lcd_data(4);
+                    }
+                    else
+                    {
+                        lcd_generatechar(1, kochen1b);
+                        lcd_setcursor(10, 1);
+                        lcd_data(1);
+                        lcd_generatechar(2, kochen2b);
+                        lcd_setcursor(11, 1);
+                        lcd_data(2);
+                        lcd_generatechar(3, kochen3b);
+                        lcd_setcursor(12, 1);
+                        lcd_data(3);
+                        lcd_generatechar(4, kochen4b);
+                        lcd_setcursor(13, 1);
+                        lcd_data(4);
+                    }
+                }
+
+            }
+        
+        if (Sekunden == 0)
+        {
+            for (uint8_t i = 0; i <= 99; i++)
+            {
+                for (uint16_t a = 0; a < 60; a++)
+                {
+                    Anzeige2(i);
+                    _delay_ms(990);
+                }
+                _delay_us(1600);
+            }
+
+        }
+        Anzeige2(duration);
+        playTone(1, 20);
+        _delay_ms(10);
+        playTone(1, 20);
+        _delay_ms(10);
+        playTone(1, 20);
+        _delay_ms(10);
+        _delay_ms(100);
     }
     
     /*Erster der beiden Presetbuttons*/

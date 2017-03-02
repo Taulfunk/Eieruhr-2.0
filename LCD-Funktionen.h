@@ -134,6 +134,7 @@ uint8_t kochen4b[8] =
     0b11111111,
     0b11111111
 };
+
 /*Gibt einen Balken pro Dekade in der oberen Zeile aus*/
 void Balken(uint8_t duration)
 {
@@ -247,6 +248,39 @@ void Timer(uint8_t duration, uint8_t mode)
                 {
                     Anzeige2(i);
                     _delay_ms(990);
+                    
+                    /*stellt einen brodelnden Kochtopf dar*/
+                    if ((a % 2) == 0)
+                    {
+                        lcd_generatechar(1, kochen1a);
+                        lcd_setcursor(10, 1);
+                        lcd_data(1);
+                        lcd_generatechar(2, kochen2a);
+                        lcd_setcursor(11, 1);
+                        lcd_data(2);
+                        lcd_generatechar(3, kochen3a);
+                        lcd_setcursor(12, 1);
+                        lcd_data(3);
+                        lcd_generatechar(4, kochen4a);
+                        lcd_setcursor(13, 1);
+                        lcd_data(4);
+                    }
+                    else
+                    {
+                        lcd_generatechar(1, kochen1b);
+                        lcd_setcursor(10, 1);
+                        lcd_data(1);
+                        lcd_generatechar(2, kochen2b);
+                        lcd_setcursor(11, 1);
+                        lcd_data(2);
+                        lcd_generatechar(3, kochen3b);
+                        lcd_setcursor(12, 1);
+                        lcd_data(3);
+                        lcd_generatechar(4, kochen4b);
+                        lcd_setcursor(13, 1);
+                        lcd_data(4);
+                    }
+
                 }
                 _delay_us(1600);
             }
@@ -259,7 +293,5 @@ void Timer(uint8_t duration, uint8_t mode)
     
     //duration = 0;     // call by reference um uebergebenen Parameter zu aendern
 }
-
-
 
 #endif /* LCD_Funktionen_h */
